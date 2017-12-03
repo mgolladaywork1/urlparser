@@ -1,0 +1,28 @@
+{
+  "name": "url-parser",
+  "version": "1.0.0",
+  "description": "using default url parser to parse each element of a given url",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "npm run build:live",
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/index.ts"
+  },
+  "author": "MG",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^8.0.53",
+    "nodemon": "^1.12.1",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "@angular/common": "^5.0.5",
+    "@angular/core": "^5.0.5",
+    "@angular/platform-browser": "^5.0.5",
+    "@angular/router": "^5.0.0",
+    "rxjs": "^5.5.3",
+    "zone.js": "^0.8.18"
+  }
+}
