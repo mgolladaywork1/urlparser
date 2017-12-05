@@ -18,15 +18,15 @@ export class UrlParser {
     console.log(`urlTree serialized: ${urlTree.toString()}`);
     console.log(`urlTree serialized: ${(new DefaultUrlSerializer()).serialize(urlTree)}`);
     const qryParam : ParamMap = urlTree.queryParamMap;
-    console.log(qryParam.keys.length);
+    console.log(` param keys length: ${qryParam.keys.length}`);
     console.log(` QueryParams: ${JSON.stringify(qryParam)}`);
     if (qryParam.keys.length > 0 ){
       qryParam.keys.forEach(qkey => {
         console.log(` ${qkey} = ${qryParam.getAll(qkey)} `);
       })
     }
-    const fragment : string | null = urlTree.fragment;
-    console.log(` url has fragment: ${fragment}`)
+    const fragment1 : string | null = urlTree.fragment;
+    console.log(` url has fragment: ${fragment1}`);
     Object.keys(groupMap).forEach(key => {
       if (groupMap.hasOwnProperty(key)) {
         var segmentGroup = groupMap[key];
@@ -47,21 +47,26 @@ export class UrlParser {
           console.log(`       ${segmentGroup.numberOfChildren}`);
           console.log(`     Need to find primary-->messages/44  //  secondary --> help:messages/123`)
           let group1Map: { [id: string]: UrlSegmentGroup; } = segmentGroup.children;
-          if (group1Map.hasOwnProperty(key)) {
-            var segment1Group = group1Map[key];
-            console.log(`  ${key} has ${segment1Group.segments.length} segments.`)
-            console.log(`    segments: ${segment1Group.segments.toString()}`)
-            segment1Group.segments.forEach(element => {
-              console.log(`      ${element.path}`);
-              console.log(`      ${JSON.stringify(element.parameters)}`);
-              if (element.parameterMap.keys.length > 0) {
-                element.parameterMap.keys.forEach(pkey => {
-                  console.log(`        - ${pkey} =  ${element.parameterMap.get(pkey)}`);
-                })
-              }  
-            });
-           }
-          }
+           
+          Object.keys(group1Map).forEach(key => {       
+            if (group1Map.hasOwnProperty(key)) {
+              var segment1Group = group1Map[key];
+              console.log(`  ${key} has ${segment1Group.segments.length} segments.`)
+              console.log(`    segments: ${segment1Group.segments.toString()}`)
+              segment1Group.segments.forEach(element => {
+                console.log(`      ${element.path}`);
+                console.log(`      ${JSON.stringify(element.parameters)}`);
+                if (element.parameterMap.keys.length > 0) {
+                  element.parameterMap.keys.forEach(pkey => {
+                    console.log(`        - ${pkey} =  ${element.parameterMap.get(pkey)}`);
+                  });
+                }
+                console.log(` segment1Group has children: ${segment1Group.numberOfChildren}`);
+                
+              });
+            }
+          }); 
+        }
       }
     });
   }
