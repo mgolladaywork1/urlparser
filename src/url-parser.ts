@@ -8,7 +8,60 @@ import { UrlSegment } from '@angular/router/src/url_tree';
 export class UrlParser {
   constructor() { }
 
+
+  public parseGroup(groupMap: { [id: string]: UrlSegmentGroup; }, level : number ): void {
+    let nextlevel : number = level * 100;
+    let nextSibling : number = level;
+    Object.keys(groupMap).forEach(key => {
+      nextSibling += 1;
+      if (groupMap.hasOwnProperty(key) ) {
+        //console.log(`${key}`);
+        //console.log('loop each child');
+        let segmentGroup = groupMap[key];
+        segmentGroup.segments.forEach(element => {
+          console.log(`      path:    ${element.path}`);
+          if (element.parameterMap.keys.length > 0) {
+            element.parameterMap.keys.forEach(pkey => {
+              console.log(`      matrix Param: - ${pkey} =  ${element.parameterMap.get(pkey)}`);
+            })
+          }  
+        });
+        
+        if (segmentGroup.hasChildren && segmentGroup.numberOfChildren > 0) {
+          console.log(`   [${nextSibling}] [${key}] is a Branch`);
+          let gpMap: { [id:string]: UrlSegmentGroup } = segmentGroup.children;
+          this.parseGroup( gpMap, nextlevel);
+        } else {
+          console.log(`   [${nextSibling}] [${key}] is a leaf`);
+        }
+        
+      } else {
+        console.log(`${key}`);        
+        console.log('this is a leaf');
+      }
+  
+    });
+  }
+
   public parser(url: string): void {
+    let serializer: DefaultUrlSerializer = new DefaultUrlSerializer();
+    let urlTree: UrlTree = serializer.parse(url);
+    let primaryGroup: UrlSegmentGroup = urlTree.root.children['primary'];
+    const qryParam : ParamMap = urlTree.queryParamMap;
+    console.log(`This url has ${qryParam.keys.length} query param`);    
+    if (qryParam.keys.length > 0 ){
+      qryParam.keys.forEach(qkey => {
+        console.log(` ${qkey} = ${qryParam.getAll(qkey)} `);
+      })
+    }
+    const fragment1 : string | null = urlTree.fragment;
+    console.log(` url has fragment: ${fragment1}`);
+    let lvl = 10;
+    let groupMap: { [id: string]: UrlSegmentGroup; } = urlTree.root.children;
+    this.parseGroup( groupMap, lvl);
+  }
+
+  public parser01(url: string): void {
     let serializer: DefaultUrlSerializer = new DefaultUrlSerializer();
 
     const urlTree: UrlTree = serializer.parse(url);
@@ -71,12 +124,4 @@ export class UrlParser {
     });
   }
 
-  private parseGroup(group: { [id: string]: UrlSegmentGroup; } ): void {
-    if (group.children ) {
-      console.log('loop each child');
-      
-    } else {
-      console.log('this is a leaf');
-    }
-  }
 }
